@@ -1,5 +1,5 @@
 import {act, RenderHookResult} from '@testing-library/react';
-import {renderHook} from '@testing-library/react'
+import {renderHook} from '@testing-library/react';
 import BlocksProvider, {BlocksContext, useBlocks} from './BlocksProvider';
 import {Strategy, Vault} from '../useVaults/types';
 import {functions} from './Blocks';
@@ -12,9 +12,9 @@ const mocks = {
 			version: '0.4.3',
 			network: {chainId: 1},
 			withdrawalQueue: [
-				{ address: '0x1676055fE954EE6fc388F9096210E5EbE0A9070c', network: {chainId: 1} } as Strategy,
-				{ address: '0x9E3aeF1fb3dE09b8c46247fa707277b7331406B5', network: {chainId: 1} } as Strategy,
-				{ address: '0xF9fDc2B5F60355A237deb8BD62CC117b1C907f7b', network: {chainId: 1} } as Strategy
+				{address: '0x1676055fE954EE6fc388F9096210E5EbE0A9070c', network: {chainId: 1}} as Strategy,
+				{address: '0x9E3aeF1fb3dE09b8c46247fa707277b7331406B5', network: {chainId: 1}} as Strategy,
+				{address: '0xF9fDc2B5F60355A237deb8BD62CC117b1C907f7b', network: {chainId: 1}} as Strategy
 			]
 		} as Vault,
 		b: {
@@ -23,9 +23,9 @@ const mocks = {
 			version: '0.4.3',
 			network: {chainId: 1},
 			withdrawalQueue: [
-				{ address: '0x97D868b5C2937355Bf89C5E5463d52016240fE86', network: {chainId: 1} } as Strategy,
-				{ address: '0x7C2b9DB2Ae5aCC6fAC2Fd6cE9b01A5EB4bDD1309', network: {chainId: 1} } as Strategy,
-				{ address: '0x66f7b6E7EB858075d6F2c5615F22659a1A20f6D6', network: {chainId: 1} } as Strategy
+				{address: '0x97D868b5C2937355Bf89C5E5463d52016240fE86', network: {chainId: 1}} as Strategy,
+				{address: '0x7C2b9DB2Ae5aCC6fAC2Fd6cE9b01A5EB4bDD1309', network: {chainId: 1}} as Strategy,
+				{address: '0x66f7b6E7EB858075d6F2c5615F22659a1A20f6D6', network: {chainId: 1}} as Strategy
 			]
 		} as Vault
 	}

@@ -1,4 +1,4 @@
-import {registry, erc20, vault030, vault035, vault043, strategy,masterchef, masterchefstrat} from '../abi';
+import {registry, erc20, vault030, vault035, vault043, strategy,masterchef, masterchefstrat, registryadapter, strategieshelper} from '../abi';
 import {compare} from 'compare-versions';
 import {ethers} from 'ethers';
 //import {SpookySwapRouter, SpiritSwapRouter} from './Addresses';
@@ -180,6 +180,14 @@ function GetVaultAbi(version) {
 	if(compare(version, '0.3.5', '<')) return vault030;
 	if(compare(version, '0.3.5', '=')) return vault035;
 	return vault043;
+}
+
+function getVaultRegistryAbi() {
+	return registryadapter;
+}
+
+function getStrategyHelperAbi() {
+	return strategieshelper;
 }
 
 async function GetVaultContract(vault, provider, version){
@@ -416,5 +424,7 @@ export {
 	AllRegistered,
 	StratInfo, 
 	Erc20Info, 
-	GetMasterchef
+	GetMasterchef,
+	getVaultRegistryAbi,
+	getStrategyHelperAbi,
 };
