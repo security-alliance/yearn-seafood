@@ -32,7 +32,10 @@ export function register(config?: Config) {
 	// if ('serviceWorker' in navigator) {
 		console.log('registering service worker');
 		window.addEventListener('load', () => {
-			const swUrl = `${window.location.origin}/service-worker.js`;
+			let swUrl = `${window.location.origin}/service-worker.js`;
+			if (!isLocalhost) {
+				swUrl = `${window.location.origin}/seafood/service-worker.js`
+			}
 
 			console.log({isLocalhost});
 			registerValidSW(swUrl, config);
