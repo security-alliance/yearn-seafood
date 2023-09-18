@@ -17,9 +17,6 @@ import {
 	Tradeable,
 	VaultMulticallUpdate,
 } from './types';
-import merge from './merge';
-import {AssetstaticResponse, MetadataResponse, UnderlyingTokenBalanceResponse, AssetdynamicResponse} from '../../../abi/registryadapter';
-import {StrategymetadataResponse} from '../../../abi/strategieshelper';
 
 export const api = {
 	ahoy: () => `🐟 ahoy from useVaults worker ${new Date()}`,
@@ -76,7 +73,7 @@ function surfaceLog(message: any) {
 async function requestVaults() {
 	surfaceLog('Inner requesting vaults');
 	// const vaults = await getAll<Seafood.Vault[]>('vaults')
-	const vaults = await fetchLensVaults();
+	const vaults = await fetchVaults();
 	surfaceLog({vaults});
 	sort(vaults);
 	callbacks.forEach((callback) => callback.onVaults(vaults));
@@ -100,22 +97,32 @@ async function refresh() {
 	resetWorkerCache();
 
 	const latest = [] as Seafood.Vault[];
+	
 	const currentVaults = await getAll<Seafood.Vault[]>('vaults');
 
 	// fetch fast data
-	const vaultverse = await fetchVaultverse();
+	// const vaultverse = await fetchVaultverse();
 	const tvlUpdates = await fetchTvlUpdates();
 
-	for (const [index, chain] of config.chains.entries()) {
-		latest.push(
-			...(vaultverse[index] || []).map((vault) => {
-				const current = currentVaults.find((v) => v.network.chainId === chain.id && v.address === vault.address);
-				const update = merge(current || Seafood.defaultVault, vault, chain) as Seafood.Vault;
-				update.tvls = tvlUpdates[chain.id][vault.address];
-				return update;
-			})
-		);
-	}
+	// for (const [index, chain] of config.chains.entries()) {
+	// 	latest.push(
+	// 		...(vaultverse[index] || []).map((vault) => {
+	// 			const current = currentVaults.find((v) => v.network.chainId === chain.id && v.address === vault.address);
+	// 			const update = merge(current || Seafood.defaultVault, vault, chain) as Seafood.Vault;
+	// 			update.tvls = tvlUpdates[chain.id][vault.address];
+	// 			return update;
+	// 		})
+	// 	);
+	// }
+	
+	latest.push(
+		...(currentVaults || []).map((vault) => {
+			const update = vault;
+			update.tvls = tvlUpdates[vault.network.chainId][vault.address];
+			return update;
+		})
+	);
+
 
 	sort(latest);
 	hydrateBigNumbersRecursively(latest);
@@ -124,8 +131,9 @@ async function refresh() {
 	await requestVaults();
 
 	// fetch multicalls
-	const multicallUpdates = await fetchMulticallUpdates(vaultverse);
-	const strategies = latest.map((vault) => vault.withdrawalQueue).flat();
+	const multicallUpdates = await fetchMulticallUpdates([currentVaults]);
+	// const strategies = latest.map((vault) => vault.withdrawalQueue).flat();
+	const strategies = latest.map((vault) => vault.strategies).flat();
 	for (const update of multicallUpdates) {
 		if (update.type === 'vault') {
 			const vault = latest.find((v) => v.network.chainId === update.chainId && v.address === update.address);
@@ -157,13 +165,13 @@ async function refresh() {
 		latest
 			.filter((vault) => vault.network.chainId === chain.id)
 			.forEach((vault) => {
-				vault.withdrawalQueue.forEach((strategy) => {
+				vault.strategies.forEach((strategy) => {
 					const update = rewardsUpdates.find((update) => update.chainId === chain.id && update.address === strategy.address);
 					strategy.rewards = update?.rewards || [];
 				});
 
 				vault.rewardsUsd =
-                    vault.withdrawalQueue
+                    vault.strategies
                     	.map((s) => s.rewards)
                     	.flat()
                     	.reduce((acc, reward) => acc + reward?.amountUsd, 0) || 0;
@@ -295,7 +303,7 @@ async function fetchVaultverse(): Promise<yDaemon.Vault[][]> {
 	return result;
 }
 
-async function fetchMulticallUpdates(vaultverse: yDaemon.Vault[][]) {
+async function fetchMulticallUpdates(vaultverse: Seafood.Vault[][]) {
 	const result = [];
 	for (const [index, chain] of config.chains.entries()) {
 		const status = {status: 'refreshing', stage: 'multicall', chain: chain.id, timestamp: Date.now()} as RefreshStatus;
@@ -334,7 +342,7 @@ async function batchMulticalls(multicall: Multicall, calls: ContractCallContext[
 	return result;
 }
 
-async function createVaultMulticalls(vaults: yDaemon.Vault[], chain: Seafood.Chain, multicall: Multicall) {
+async function createVaultMulticalls(vaults: Seafood.Vault[], chain: Seafood.Chain, multicall: Multicall) {
 	const result = [];
 	const vaultMulticalls = vaults.map((vault) => ({
 		reference: vault.address,
@@ -377,7 +385,7 @@ async function createVaultMulticalls(vaults: yDaemon.Vault[], chain: Seafood.Cha
 	return result;
 }
 
-async function createStrategyMulticalls(vaults: yDaemon.Vault[], chain: Seafood.Chain, multicall: Multicall) {
+async function createStrategyMulticalls(vaults: Seafood.Vault[], chain: Seafood.Chain, multicall: Multicall) {
 	const result = [];
 	const strategies = vaults.map((vault) => vault.strategies).flat();
 
@@ -435,12 +443,26 @@ function markupWarnings(vaults: Seafood.Vault[]) {
 			vault.warnings.push({key: 'noDepositLimit', message: 'This vault cannot take deposits until its limit is raised.'});
 		}
 
-		vault.withdrawalQueue.forEach((strategy) => {
+		vault.strategies.forEach((strategy) => {
 			if (!strategy.healthCheck || strategy.healthCheck === ethers.constants.AddressZero) {
 				vault.warnings.push({key: 'noHealthCheck', message: `No health check set on ${strategy.name}`});
 			}
 		});
 	});
+}
+
+async function fetchVaults(): Promise<Seafood.Vault[]> {
+	const status = {status: 'refreshing', stage: 'tvls', chain: 'all', timestamp: Date.now()} as RefreshStatus;
+	await putStatus(status);
+	try {
+		const result = (await (await fetch('/api/getVaults/AllVaults')).json()) as Seafood.Vault[];
+		await putStatus({...status, status: 'ok', timestamp: Date.now()});
+		return result;
+	} catch (error) {
+		await putStatus({...status, status: 'warning', error, timestamp: Date.now()});
+		const result = [] as Seafood.Vault[];
+		return result;
+	}
 }
 
 async function fetchTvlUpdates(): Promise<TVLUpdates> {
@@ -481,177 +503,6 @@ async function getPrice(token: string, chain: Seafood.Chain) {
 		workerCache.prices.push({chainId: chain.id, token, price});
 	}
 	return price;
-}
-
-const vaultRegistryAbi = [
-	'function assetsDynamic() view returns (tuple(address id, string typeId, address tokenId, uint256 amount, uint256 amountUsdc, uint256 pricePerShare, bool migrationAvailable, address latestVaultAddress, uint256 depositLimit, bool emergencyShutdown)[])',
-	'function assetsStatic() view returns (tuple(address id, string typeId, address tokenId, string name, string version, string symbol, uint8 decimals)[])'
-];
-
-const strategiesHelperAbi = [
-	'function assetsStrategiesAddresses() view returns address[]',
-	'function assetsStrategies(address[]) view returns (tuple(string name, string apiVersion, address strategist, address rewards, address vault, address keeper, address want, bool emergencyExit, bool isActive, uint256 delegatedAssets, uint256 estimatedTotalAssets)[])'
-];
-
-async function fetchLensVaults(): Promise<Seafood.Vault[]> {
-	surfaceLog('Fetching lens vaults');
-	let vaults: Seafood.Vault[] = [];
-	const provider = providerFor(config.chains[0]);
-	surfaceLog('Provider created');
-	surfaceLog({provider: JSON.stringify(provider)});
-	const vaultRegistryAddress = '0x240315db938d44bb124ae619f5Fd0269A02d1271';
-	const vaultsRegistry = new ethers.Contract(vaultRegistryAddress, vaultRegistryAbi, provider);
-	surfaceLog('vaults registry');
-
-	// const strategyRegistryAddress = '0xae813841436fe29b95a14AC701AFb1502C4CB789';
-	// const strategiesRegistry = new ethers.Contract(strategyRegistryAddress, strategiesHelperAbi, provider);
-
-	// const vaultAssets = await vaultsRegistry.assetsStatic();
-	// surfaceLog('vault assets');
-	// surfaceLog({vaultAssets: JSON.stringify(vaultAssets)});
-	if (!vaultsRegistry) {
-		surfaceLog('No vaults registry');
-		return [];
-	}
-	const vaultInfo = await vaultsRegistry.assetsStatic();
-	const vaultAssets = await vaultsRegistry.assetsDynamic();
-	// const strategyAddresses = await strategiesRegistry.assetsStrategiesAddresses();
-	// const strategies = await strategiesRegistry.assetsStrategies(strategyAddresses);
-
-	surfaceLog('vault info');
-	surfaceLog({vault: JSON.stringify(vaultInfo)});
-
-	const vaultMap = new Map<string, Seafood.Vault>();
-	vaultInfo.forEach((vault: string[]) => {
-		const id = vault[0];
-		const typeId = vault[1];
-		const tokenId = vault[2];
-		const name = vault[3];
-		const version = vault[4];
-		const symbol = vault[5];
-		const decimals = vault[6];
-
-		surfaceLog('vault');
-		surfaceLog({vault: JSON.stringify(vault)});
-		vaultMap.set(id, {
-			address: id,
-			name: name,
-			price: 0,
-			network: {
-				chainId: 1,
-				name: 'mainnet',
-			},
-			version: version,
-			want: tokenId,
-			token: {
-				address: tokenId,
-				name: symbol.split('yv')[1],
-				symbol: symbol.split('yv')[1],
-				decimals: parseInt(decimals),
-				description: '',
-			},
-			endorsed: true,
-			governance: '0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52',
-			totalAssets: undefined,
-			availableDepositLimit: undefined,
-			lockedProfitDegradation: undefined,
-			totalDebt: undefined,
-			decimals: BigNumber.from(decimals), // TODO decimals of vault token?
-			debtRatio: undefined,
-			managementFee: BigNumber.from(0), // TODO
-			performanceFee: ethers.constants.Zero, // TODO
-			depositLimit: ethers.constants.Zero,
-			activation: ethers.constants.Zero, // TODO
-			strategies: [], // TODO
-			withdrawalQueue: [], // TODO
-			apy: {
-				type: 'static',
-				gross: 0,
-				net: 0,
-				[-7]: 0,
-				[-30]: 0,
-				inception: 0,
-			}, // TODO
-			tvls: {
-				dates: [0], // TODO
-				tvls: [0], // TODO
-			},
-			rewardsUsd: 0, // TODO
-			warnings: [], // TODO
-		});
-	});
-
-	vaultAssets.forEach((vault: string[]) => {
-		const id = vault[0];
-		const totalAssets = vault[3];
-		const pricePerShare = vault[5];
-		const depositLimit = vault[8];
-		const vaultObj = vaultMap.get(id);
-		if (vaultObj) {
-			vaultObj.price = parseInt(pricePerShare); // TODO units
-			vaultObj.depositLimit = BigNumber.from(depositLimit);
-			vaultObj.totalAssets = BigNumber.from(totalAssets);
-		}
-	});
-
-	// strategies.forEach((strategy: StrategymetadataResponse, i: number) => {
-	// 	const vaultObj = vaultMap.get(strategy.vault);
-	// 	if (vaultObj) {
-	// 		vaultObj.strategies.push({
-	// 			address: strategyAddresses[i],
-	// 			name: strategy.name,
-	// 			description: 'TODO',
-	// 			risk: {
-	// 				riskGroupId: '',
-	// 				riskGroup: '',
-	// 				riskScore: 0,
-	// 				tvl: 0,
-	// 				allocation: {
-	// 					availableAmount: '',
-	// 					availableTVL: '',
-	// 					currentAmount: '',
-	// 					currentTVL: '',
-	// 				},
-	// 				riskDetails: {
-	// 					TVLImpact: 0,
-	// 					auditScore: 0,
-	// 					codeReviewScore: 0,
-	// 					complexityScore: 0,
-	// 					longevityImpact: 0,
-	// 					protocolSafetyScore: 0,
-	// 					teamKnowledgeScore: 0,
-	// 					testingScore: 0,
-	// 					median: 0,
-	// 				},
-	// 			},
-	// 			network: {
-	// 				chainId: 1,
-	// 				name: 'mainnet',
-	// 			},
-	// 			activation: ethers.constants.Zero, // TODO
-	// 			debtRatio: undefined,
-	// 			performanceFee: ethers.constants.Zero, // TODO
-	// 			estimatedTotalAssets: BigNumber.from(strategy.estimatedTotalAssets),
-	// 			delegatedAssets: BigNumber.from(strategy.delegatedAssets),
-	// 			lastReport: ethers.constants.Zero, // TODO
-	// 			totalDebt: ethers.constants.Zero, // TODO
-	// 			totalDebtUSD: 0, // TODO
-	// 			totalGain: ethers.constants.Zero, // TODO
-	// 			totalLoss: ethers.constants.Zero, // TODO
-	// 			withdrawalQueuePosition: 0, // TODO
-	// 			lendStatuses: [], // TODO
-	// 			healthCheck: '', // TODO
-	// 			doHealthCheck: false, // TODO
-	// 			tradeFactory: '', // TODO
-	// 			keeper: strategy.keeper,
-	// 			rewards: [], // TODO
-	// 		});
-	// 	}
-	// });
-
-	vaults = Array.from(vaultMap.values());
-	// vaults = [];
-	return vaults;
 }
 
 async function fetchRewardsUpdates(multicallUpdates: (VaultMulticallUpdate | StrategyMulticallUpdate)[]): Promise<StrategyRewardsUpdate[][]> {
