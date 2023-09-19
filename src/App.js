@@ -49,15 +49,15 @@ function Router() {
 	</div>;
 
 	return <Routes>
-		<Route path={'/'} exact={true} element={<Vaults />} />
-		<Route path={'/vault/:address'} element={<Vault />} />
-		<Route path={'/risk/*'} element={<Risk />} />
-		<Route path={'/risk/:group'} element={<RiskGroup />} />
-		<Route path={'/vyper-exposure/*'} element={<VyperExposure />} />
-		<Route path={'/vyper-exposure/:version'} element={<VyperVersionExposure />} />
-		<Route path={'/sandbox/*'} element={<Sandbox />} />
-		<Route path={'/status/*'} element={<Status />} />
-		<Route path={'/github/callback'} exact={true} element={<GithubCallback />} />
+		<Route path={'/seafood'} exact={true} element={<Vaults />} />
+		<Route path={'/seafood/vault/:address'} element={<Vault />} />
+		<Route path={'/seafood/risk/*'} element={<Risk />} />
+		<Route path={'/seafood/risk/:group'} element={<RiskGroup />} />
+		<Route path={'/seafood/vyper-exposure/*'} element={<VyperExposure />} />
+		<Route path={'/seafood/vyper-exposure/:version'} element={<VyperVersionExposure />} />
+		<Route path={'/seafood/sandbox/*'} element={<Sandbox />} />
+		<Route path={'/seafood/status/*'} element={<Status />} />
+		<Route path={'/seafood/github/callback'} exact={true} element={<GithubCallback />} />
 	</Routes>;
 }
 

@@ -24,7 +24,7 @@ export default function VaultSummary({vault, strategies}: {vault: Vault, strateg
 		return vault.price * strategy.totalDebt.div(BigNumber.from('10').pow(vault.decimals)).toNumber();
 	}, [vault]);
 
-	return <div onClick={() => navigate(`/vault/${vault.address}`)} className={`
+	return <div onClick={() => navigate(`/seafood/vault/${vault.address}`)} className={`
 		p-1 sm:p-3 sm:px-6 sm:py-3 flex flex-col
 		border border-transparent
 		hover:border-selected-500 active:border-selected-700

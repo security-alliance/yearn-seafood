@@ -21,7 +21,7 @@ export default function GithubCallback() {
 		} else {
 			axios.post('/seafood/api/github/callback', {code}).then(result => {
 				setToken(result.data);
-				navigate('/');
+				navigate('/seafood');
 			});
 		}
 	}, [query, navigate, setToken]);
