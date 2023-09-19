@@ -40,6 +40,8 @@ export default function TvlBars({vault}: {vault: Vault}) {
 			};
 		}
 	}, [vault, latest, totalAssetsDelta]);
+	
+	console.log('tvl', tvl);
 
 	return <div className={'px-2 flex flex-col'}>
 		<div>{'TVL WoW'}</div>
@@ -62,7 +64,7 @@ export default function TvlBars({vault}: {vault: Vault}) {
 						value={tvl.value}
 						simulated={tvl.simulated}
 						decimals={2}
-						nonFinite={'No TVL'}
+						nonFinite={'No TVLlll'}
 						compact={true}
 						className={'text-4xl'} />
 				</div>

@@ -23,7 +23,7 @@ async function fetchProfile(token: AuthToken) {
 }
 
 export async function refreshToken(token: AuthToken) {
-	return await (await fetch('/api/github/refreshToken', {
+	return await (await fetch('/seafood/api/github/refreshToken', {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',

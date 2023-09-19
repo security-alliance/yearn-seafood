@@ -26,7 +26,7 @@ export interface HarvestReport {
 
 async function fetchHarvestReports(vault: Vault) {
 	const strategies = vault.strategies.map(strategy => strategy.address);
-	const response = await fetch('/api/getVaults/AllStrategyReports', {
+	const response = await fetch('/seafood/api/getVaults/AllStrategyReports', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

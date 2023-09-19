@@ -455,7 +455,7 @@ async function fetchVaults(): Promise<Seafood.Vault[]> {
 	const status = {status: 'refreshing', stage: 'tvls', chain: 'all', timestamp: Date.now()} as RefreshStatus;
 	await putStatus(status);
 	try {
-		const result = (await (await fetch('/api/getVaults/AllVaults')).json()) as Seafood.Vault[];
+		const result = (await (await fetch('/seafood/api/getVaults/AllVaults')).json()) as Seafood.Vault[];
 		await putStatus({...status, status: 'ok', timestamp: Date.now()});
 		return result;
 	} catch (error) {
@@ -469,7 +469,7 @@ async function fetchTvlUpdates(): Promise<TVLUpdates> {
 	const status = {status: 'refreshing', stage: 'tvls', chain: 'all', timestamp: Date.now()} as RefreshStatus;
 	await putStatus(status);
 	try {
-		const result = (await (await fetch('/api/vision/tvls')).json()) as TVLUpdates;
+		const result = (await (await fetch('/seafood/api/vision/tvls')).json()) as TVLUpdates;
 		await putStatus({...status, status: 'ok', timestamp: Date.now()});
 		return result;
 	} catch (error) {

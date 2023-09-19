@@ -34,7 +34,7 @@ export function register(config?: Config) {
 		window.addEventListener('load', () => {
 			let swUrl = `${window.location.origin}/service-worker.js`;
 			if (!isLocalhost) {
-				swUrl = `${window.location.origin}/seafood/service-worker.js`
+				swUrl = `${window.location.origin}/seafood/service-worker.js`;
 			}
 
 			console.log({isLocalhost});

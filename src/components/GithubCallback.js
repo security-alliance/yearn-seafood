@@ -19,7 +19,7 @@ export default function GithubCallback() {
 			window.location = `https://${deployment}.${process.env.REACT_APP_STAGING_HOST}`
 				+ `/github/callback?code=${code}`;
 		} else {
-			axios.post('/api/github/callback', {code}).then(result => {
+			axios.post('/seafood/api/github/callback', {code}).then(result => {
 				setToken(result.data);
 				navigate('/');
 			});

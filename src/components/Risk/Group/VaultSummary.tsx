@@ -17,6 +17,8 @@ export default function VaultSummary({vault, strategies}: {vault: Vault, strateg
 	const tvl = useMemo(() => {
 		return vault.tvls?.tvls.slice(-1)[0] || 0;
 	}, [vault]);
+	
+	console.log('tvl', tvl);
 
 	const calculateDebtUsd = useCallback((strategy: Strategy) => {
 		return vault.price * strategy.totalDebt.div(BigNumber.from('10').pow(vault.decimals)).toNumber();

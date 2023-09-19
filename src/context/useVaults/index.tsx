@@ -81,7 +81,7 @@ export default function VaultsProvider({children}: {children: ReactNode}) {
 		worker.isRunning().then(result => {
 			// if(!result) worker.start({refreshInterval: 5 * 60 * 1000});
 			console.log('starting outer');
-			if(!result) worker.start({refreshInterval: 15 * 1000});
+			if(!result) worker.start({refreshInterval: 60 * 1000});
 		});
 
 		return () => {
