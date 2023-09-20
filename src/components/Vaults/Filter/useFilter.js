@@ -30,29 +30,32 @@ export function FilterProvider({children}) {
 	const queryRe = useMemo(() => { return new RegExp(escapeRegex(query), 'i'); }, [query]);
 
 	const filter = useMemo(() => {
+		console.log('filter', vaults.length);
 		if(!vaults.length) return [];
+		
+		const result = vaults;
 
-		const result = vaults.filter(vault => {
-			const strategyFilter = vault.strategies.reduce((accumulatedTest, strategy) => {
-				return queryRe.test(strategy.address) || accumulatedTest;
-			}, false);
+		// const result = vaults.filter(vault => {
+		// 	const strategyFilter = vault.strategies.reduce((accumulatedTest, strategy) => {
+		// 		return queryRe.test(strategy.address) || accumulatedTest;
+		// 	}, false);
 			
-			if(query && !queryRe.test(vault.name) && !queryRe.test(vault.address) && !strategyFilter) return false;
-			if(chips.favorites && !favorites.vaults?.includes(vault.address)) return false;
-			if(!chips[vault.network.name]) return false;
+		// 	if(query && !queryRe.test(vault.name) && !queryRe.test(vault.address) && !strategyFilter) return false;
+		// 	if(chips.favorites && !favorites.vaults?.includes(vault.address)) return false;
+		// 	if(!chips[vault.network.name]) return false;
 
-			const version = parseFloat(vault.version);
-			if(!chips.v1 && version < .4) return false;
-			if(!chips.v2 && version >= .4 && version < 3) return false;
+		// 	const version = parseFloat(vault.version);
+		// 	if(!chips.v1 && version < .4) return false;
+		// 	if(!chips.v2 && version >= .4 && version < 3) return false;
 
-			if(chips.tvlgtzero && getLatestTvl(vault) <= 0) return false;
-			if(chips.warnings && vault.warnings.length === 0) return false;
-			if(chips.rewardsgtzero && vault.rewardsUsd <= 0) return false;
-			if(chips.curve && chips.factory) return true;
-			if(chips.curve && !chips.factory) return !factoryRe.test(vault.name);
-			if(!chips.curve && chips.factory) return factoryRe.test(vault.name);
-			return !(curveRe.test(vault.name) || factoryRe.test(vault.name));
-		});
+		// 	if(chips.tvlgtzero && getLatestTvl(vault) <= 0) return false;
+		// 	if(chips.warnings && vault.warnings.length === 0) return false;
+		// 	if(chips.rewardsgtzero && vault.rewardsUsd <= 0) return false;
+		// 	if(chips.curve && chips.factory) return true;
+		// 	if(chips.curve && !chips.factory) return !factoryRe.test(vault.name);
+		// 	if(!chips.curve && chips.factory) return factoryRe.test(vault.name);
+		// 	return !(curveRe.test(vault.name) || factoryRe.test(vault.name));
+		// });
 
 		setReady(true);
 		return result;

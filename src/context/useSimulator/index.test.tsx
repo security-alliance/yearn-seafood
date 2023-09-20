@@ -1,5 +1,5 @@
 import {act, RenderHookResult} from '@testing-library/react';
-import {renderHook, waitFor} from '@testing-library/react'
+import {renderHook, waitFor} from '@testing-library/react';
 import axios from 'axios';
 import {BigNumber, ethers, providers} from 'ethers';
 import {Strategy, Vault} from '../useVaults/types';
@@ -7,7 +7,7 @@ import SimulatorProvider, {Simulator, useSimulator} from '.';
 import config from '../../config.json';
 import {ReactNode} from 'react';
 import {ProbesContext} from './ProbesProvider/useProbes';
-import BlocksProvider, { BlocksContext, useBlocks } from './BlocksProvider';
+import BlocksProvider, {BlocksContext, useBlocks} from './BlocksProvider';
 import SimulatorStatusProvider from './SimulatorStatusProvider';
 
 const mocks = {
@@ -34,7 +34,7 @@ const mocks = {
 };
 
 const probe = {
-	name: 'mock' as 'mock',
+	name: 'mock' as const,
 	start: jest.fn(async (vaults: Vault[], provider: providers.JsonRpcProvider) => {}),
 	stop: jest.fn(async (results, vaults: Vault[], provider: providers.JsonRpcProvider) => {}),
 };
@@ -52,18 +52,18 @@ describe('<SimulatorProvider />', () => {
 	let provider: ethers.providers.JsonRpcProvider;
 
 	beforeAll(async () => {
-    if(!process.env.TENDERLY_FORK_API) throw 'TENDERLY_FORK_API missing from .env';
-    if(!process.env.TENDERLY_ACCESS_TOKEN) throw 'TENDERLY_ACCESS_TOKEN missing from .env';
+		if(!process.env.TENDERLY_FORK_API) throw 'TENDERLY_FORK_API missing from .env';
+		if(!process.env.TENDERLY_ACCESS_TOKEN) throw 'TENDERLY_ACCESS_TOKEN missing from .env';
 
-    const result = await axios({
-      method: 'post',
-      headers: {'X-Access-Key': process.env.TENDERLY_ACCESS_TOKEN},
-      url: process.env.TENDERLY_FORK_API,
-      data: {network_id: 1}
-    });
+		const result = await axios({
+			method: 'post',
+			headers: {'X-Access-Key': process.env.TENDERLY_ACCESS_TOKEN},
+			url: process.env.TENDERLY_FORK_API,
+			data: {network_id: 1}
+		});
 
 		const simulatorUrl = `${config.tenderly.rpcUrl}/${result.data.simulation_fork.id}`;
-    provider = new ethers.providers.JsonRpcProvider(simulatorUrl);
+		provider = new ethers.providers.JsonRpcProvider(simulatorUrl);
 	});
 
 	let render: RenderHookResult<{
@@ -71,7 +71,7 @@ describe('<SimulatorProvider />', () => {
 		simulator: Simulator
 	}, unknown>;
 	beforeEach(() => {
-    render = renderHook(() => ({
+		render = renderHook(() => ({
 			blocks: useBlocks(),
 			simulator: useSimulator()
 		}), {
@@ -118,7 +118,7 @@ describe('<SimulatorProvider />', () => {
 		});
 
 		const {simulator} = render.result.current;
-		expect(simulator.results.length).toBe(1)
+		expect(simulator.results.length).toBe(1);
 		expect(simulator.results[0].status).toBe('ok');
 		expect(simulator.results[0].output).toBeDefined();
 		expect(simulator.results[0].explorerUrl).toBeDefined();

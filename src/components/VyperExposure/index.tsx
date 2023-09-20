@@ -26,7 +26,7 @@ function useProgramVaults() {
 
 	useEffect(() => {
 		(async () => {
-			const response = await fetch('/api/programs');
+			const response = await fetch('/seafood/api/programs');
 			setPrograms(await response.json());
 		})();
 	}, [setPrograms]);

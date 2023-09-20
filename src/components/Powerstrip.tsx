@@ -93,10 +93,10 @@ export default function Powerstrip({className}: {className?: string}) {
 	const syncStatus = useVaultStatusUI();
 	const {profile, login, logout} = useAuth();
 	const links = [
-		{to: '/status', label: 'Status', altPathPatterns: []},
-		{to: '/', label: 'Vaults', altPathPatterns: ['/vault/:address']},
-		{to: '/risk', label: 'Risk', altPathPatterns: ['/risk/:group']},
-		{to: '/vyper-exposure', label: 'Vyper Exposure', altPathPatterns: ['/vyper-exposure/:version']},
+		{to: '/seafood/status', label: 'Status', altPathPatterns: []},
+		{to: '/seafood/', label: 'Vaults', altPathPatterns: ['/seafood/vault/:address']},
+		{to: '/seafood/risk', label: 'Risk', altPathPatterns: ['/seafood/risk/:group']},
+		{to: '/seafood/vyper-exposure', label: 'Vyper Exposure', altPathPatterns: ['/seafood/vyper-exposure/:version']},
 		{
 			onClick: profile ? logout : login,
 			label: !profile ? 'Github Login' : <div className={'relative w-full flex items-center justify-between'}>

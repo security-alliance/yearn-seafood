@@ -17,7 +17,7 @@ export default function List() {
 	useKeypress(['Enter'], () => {
 		setTimeout(() => {
 			if(filter.length === 1){
-				navigate(`/vault/${filter[0].address}`);
+				navigate(`/seafood/vault/${filter[0].address}`);
 			}
 		}, 0);
 	});
@@ -53,9 +53,9 @@ export default function List() {
 		const result = frame.map((vault, index) => {
 			return <Tile key={index} vault={vault} onClick={(event) => {
 				if (event.ctrlKey || event.shiftKey || event.metaKey) {
-					window.open(`/vault/${vault.address}`, '_blank');
+					window.open(`/seafood/vault/${vault.address}`, '_blank');
 				}else{
-					navigate(`/vault/${vault.address}`);
+					navigate(`/seafood/vault/${vault.address}`);
 				}
 			}} />;
 		});

@@ -59,9 +59,9 @@ export default function VyperVersionExposure() {
 			return <Tile key={index} vault={vault} onClick={(event?: React.MouseEvent<HTMLDivElement>) => {
 				if(vault.version === 'program') return;
 				if(event && (event.ctrlKey || event.shiftKey || event.metaKey)) {
-					window.open(`/vault/${vault.address}`, '_blank');
+					window.open(`/seafood/vault/${vault.address}`, '_blank');
 				} else {
-					navigate(`/vault/${vault.address}`);
+					navigate(`/seafood/vault/${vault.address}`);
 				}
 			}} />;
 		});

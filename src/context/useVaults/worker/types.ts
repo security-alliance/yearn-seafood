@@ -10,6 +10,7 @@ export interface Callback {
 	onStatus: (status: RefreshStatus[]) => void,
 	onVaults: (vaults: Seafood.Vault[]) => void,
 	onRefreshed: (date: Date) => void
+	onLog: (message: any) => void
 }
 
 export interface RefreshStatus {

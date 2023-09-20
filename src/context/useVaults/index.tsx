@@ -37,22 +37,31 @@ export default function VaultsProvider({children}: {children: ReactNode}) {
 	const [vaults, setVaults] = useState<Seafood.Vault[]>([]);
 	const [status, setStatus] = useState<RefreshStatus[]>([]);
 	const worker = useWorker();
+	
+	// console.log('VaultsProvider', {refreshing, cachetime, vaults, status});
 
 	const callback = useMemo(() => {
 		return {
 			onRefresh: () => {
+				console.log('onRefresh');
 				setRefreshing(true);
 			},
 			onStatus: (status: RefreshStatus[]) => {
+				// console.log('onStatus', status);
 				setStatus(status);
 			},
 			onVaults: (vaults: Seafood.Vault[]) => {
+				console.log('onVaults', vaults);
 				hydrateBigNumbersRecursively(vaults);
 				setVaults(vaults);
 			},
 			onRefreshed: (date: Date) => {
+				console.log('onRefreshed', date);
 				setCachetime(date);
 				setRefreshing(false);
+			},
+			onLog: (message: any) => {
+				console.log('onLog', message);
 			}
 		};
 	}, [setCachetime]);
@@ -65,19 +74,24 @@ export default function VaultsProvider({children}: {children: ReactNode}) {
 			worker.ahoy().then(result => console.log(result));
 		}
 
+		console.log('Requesting Vaults');
 		worker.requestStatus();
 		worker.requestVaults();
 		worker.isRefreshing().then(result => setRefreshing(result));
 		worker.isRunning().then(result => {
-			if(!result) worker.start({refreshInterval: 5 * 60 * 1000});
+			// if(!result) worker.start({refreshInterval: 5 * 60 * 1000});
+			console.log('starting outer');
+			if(!result) worker.start({refreshInterval: 60 * 1000});
 		});
 
 		return () => {
+			console.log('removing callback');
 			worker.removeCallback(callbackProxy);
 		};
 	}, [worker, callback]);
 
 	const refresh = useCallback(() => {
+		console.log('refreshing');
 		worker.refresh();
 	}, [worker]);
 

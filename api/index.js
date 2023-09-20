@@ -11,13 +11,13 @@ const abiRouter = require('./routes/abi');
 const tradeablesRouter = require('./routes/tradeables');
 const programsRouter = require('./routes/programs');
 
-app.use('/api/getVaults', getVaultsRouter);
-app.use('/api/github', githubRouter);
-app.use('/api/vision', visionRouter);
-app.use('/api/tenderly', tenderlyRouter);
-app.use('/api/abi', abiRouter);
-app.use('/api/tradeables', tradeablesRouter);
-app.use('/api/programs', programsRouter);
+app.use('/seafood/api/getVaults', getVaultsRouter);
+app.use('/seafood/api/github', githubRouter);
+app.use('/seafood/api/vision', visionRouter);
+app.use('/seafood/api/tenderly', tenderlyRouter);
+app.use('/seafood/api/abi', abiRouter);
+app.use('/seafood/api/tradeables', tradeablesRouter);
+app.use('/seafood/api/programs', programsRouter);
 
 const port = process.env.PORT || 9000;
 app.listen(port, () => console.log(`Server running on ${port}, http://localhost:${port}`));

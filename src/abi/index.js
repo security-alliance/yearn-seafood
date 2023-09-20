@@ -14,6 +14,8 @@ import solidlyRouter from './solidlyRouter.json';
 import lpDepositer from './lpDepositer.json';
 import solidlyPair from './solidlyPair.json';
 import solidlygauge from './solidlygauge.json';
+import registryadapter from './registryadapter.json';
+import strategieshelper from './strategieshelper.json';
 
 export {
 	registry,
@@ -31,5 +33,7 @@ export {
 	solidlyRouter,
 	lpDepositer,
 	solidlyPair,
-	solidlygauge
+	solidlygauge,
+	registryadapter,
+	strategieshelper
 };

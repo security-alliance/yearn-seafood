@@ -46,13 +46,13 @@ export default function Menu({action}) {
 			</MenuItem>
 			<MenuItem />
 			<MenuItem>
-				<MenuLink to={'/'} label={'Vaults'} altPathPatterns={['/vault/:address']}></MenuLink>
+				<MenuLink to={'/seafood/'} label={'Vaults'} altPathPatterns={['/seafood/vault/:address']}></MenuLink>
 			</MenuItem>
 			<MenuItem>
-				<MenuLink to={'/risk'} label={'Risk'} altPathPatterns={['/risk/:group']}></MenuLink>
+				<MenuLink to={'/seafood/risk'} label={'Risk'} altPathPatterns={['/seafood/risk/:group']}></MenuLink>
 			</MenuItem>
 			<MenuItem>
-				<MenuLink to={'/vyper-exposure'} label={'Vyper Expsoure'}></MenuLink>
+				<MenuLink to={'/seafood/vyper-exposure'} label={'Vyper Expsoure'}></MenuLink>
 			</MenuItem>
 			<MenuItem />
 			<MenuItem>

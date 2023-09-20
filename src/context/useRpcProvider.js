@@ -7,7 +7,7 @@ function createHttpsProvider(url, name, chainId) {
 }
 
 function createProvider(url, name, chainId) {
-	if(url.startsWith('https')) {
+	if(url.startsWith('http')) {
 		return createHttpsProvider(url, name, chainId);
 	} else {
 		throw `Unsupported protocol, ${url}`;

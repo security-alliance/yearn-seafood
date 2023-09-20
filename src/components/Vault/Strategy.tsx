@@ -32,6 +32,7 @@ function AccordianTitle({index, strategy}: {index: number, strategy: TStrategy})
 	</div>;
 }
 
+// TODO return mock strategy if usdc vault
 export default function Strategy({index, strategy}: {index: number, strategy: TStrategy}) {
 	const location = useLocation();
 	const {vault, reports} = useVault();

@@ -190,6 +190,7 @@ export default function BlocksProvider({children}: {children: ReactNode}) {
 	const computeVaultDr = useCallback((vault: Vault | null | undefined) => {
 		if(!vault) return {} as Simulated;
 		const drUpdates = extractDrUpdates(vault);
+		// console.log({drUpdates, vault});
 		const debtRatio = vault.withdrawalQueue.map((s: Strategy) => {
 			if(drUpdates[s.address] !== undefined) {
 				return drUpdates[s.address];

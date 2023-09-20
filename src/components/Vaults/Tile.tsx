@@ -106,6 +106,8 @@ export default function Tile({vault, onClick}: {vault: Vault, onClick: (event?: 
 	const apyProbeResults = useApyProbeResults(vault, simulator.probeStartResults, simulator.probeStopResults);
 	const apyDelta = useApyProbeDelta(vault, apyProbeResults, false);
 	const {tvl, deployed} = useAssetsProbeResults(vault, simulator.probeStartResults, simulator.probeStopResults);
+	
+	console.log('Tile', {vault, apyProbeResults, apyDelta, tvl, deployed});
 
 	const hasBlocks = useMemo(() => blocksForVault(vault).length > 0, [vault, blocksForVault]);
 

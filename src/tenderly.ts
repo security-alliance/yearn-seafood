@@ -12,7 +12,7 @@ export interface SimulationResult {
 }
 
 async function createProvider(network_id: number, block_number?: number) {
-	const result = await fetch('/api/tenderly/fork', {
+	const result = await fetch('/seafood/api/tenderly/fork', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

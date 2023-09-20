@@ -1,11 +1,11 @@
 {
 	"ydaemon": {
-		"url": "https://ydaemon.ycorpo.com"
+		"url": "http://localhost:8080"
 	},
 	"tenderly": {
-		"forkUrl": "https://simulate.yearn.network/fork",
-		"dashboardUrl": "https://dashboard.tenderly.co/yearn/yearn-web/fork",
-		"rpcUrl": "https://rpc.tenderly.co/fork"
+		"forkUrl": "https: //simulate.yearn.network/fork",
+		"dashboardUrl": "https: //dashboard.tenderly.co/yearn/yearn-web/fork",
+		"rpcUrl": "https: //rpc.tenderly.co/fork"
 	},
 	"sms": {
 		"owner": "yearn",
@@ -17,52 +17,52 @@
 		{
 			"id": 1,
 			"name": "ethereum",
-			"explorer": "https://etherscan.io",
+			"explorer": "https://securityalliance.dev",
 			"explorerApi": "https://api.etherscan.io",
 			"registry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
 			"providers": [
-				"https://ethereum.publicnode.com"
+				"http://localhost:8545"
 			]
 		},
 		{
 			"id": 10,
 			"name": "optimism",
-			"explorer": "https://optimistic.etherscan.io",
-			"explorerApi": "https://api-optimistic.etherscan.io",
+			"explorer": "https: //optimistic.etherscan.io",
+			"explorerApi": "https: //api-optimistic.etherscan.io",
 			"registry": "0x1ba4eB0F44AB82541E56669e18972b0d6037dfE0",
 			"providers": [
-				"https://rpc.ankr.com/optimism"
+				"https: //rpc.ankr.com/optimism"
 			]
 		},
 		{
 			"id": 250,
 			"name": "fantom",
-			"explorer": "https://ftmscan.com",
-			"explorerApi": "https://api.ftmscan.com",
+			"explorer": "https: //ftmscan.com",
+			"explorerApi": "https: //api.ftmscan.com",
 			"registry": "0x727fe1759430df13655ddb0731dE0D0FDE929b04",
 			"providers": [
-				"https://rpc.ankr.com/fantom"
+				"https: //rpc.ankr.com/fantom"
 			]
 		},
 		{
 			"id": 8453,
 			"name": "base",
-			"explorer": "https://basescan.org/",
-			"explorerApi": "https://api.basescan.org/",
+			"explorer": "https: //basescan.org/",
+			"explorerApi": "https: //api.basescan.org/",
 			"registry": "0xF3885eDe00171997BFadAa98E01E167B53a78Ec5",
 			"multicall": "0xca11bde05977b3631167028862be2a173976ca11",
 			"providers": [
-				"https://rpc.ankr.com/base"
+				"https: //rpc.ankr.com/base"
 			]
 		},
 		{
 			"id": 42161,
 			"name": "arbitrum",
-			"explorer": "https://arbiscan.io",
-			"explorerApi": "https://api.arbiscan.io",
+			"explorer": "https: //arbiscan.io",
+			"explorerApi": "https: //api.arbiscan.io",
 			"registry": "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f",
 			"providers": [
-				"https://arb1.arbitrum.io/rpc"
+				"https: //arb1.arbitrum.io/rpc"
 			]
 		}
 	]
